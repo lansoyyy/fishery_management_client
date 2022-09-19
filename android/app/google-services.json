@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "378285704223",
+    "project_id": "fishery-management",
+    "storage_bucket": "fishery-management.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378285704223:android:ccd6a3be703ecbf603412a",
+        "android_client_info": {
+          "package_name": "com.example.fishery_management_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "378285704223-husf8gufjv8le5re4585umcokfiguo7t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiQSWg4d_CJ7uTcX-jE1hVd2EASiTPHzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "378285704223-husf8gufjv8le5re4585umcokfiguo7t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
