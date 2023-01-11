@@ -39,6 +39,7 @@ dependencies:
   firebase_core:
   cloud_firestore:
   get_storage:
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
