@@ -25,6 +25,7 @@ Future postTemp(
     'temp': temp,
     'pondName': pondName,
     'pondLocation': pondLocation,
+    'dateTime': DateTime.now()
   };
 
   await docUser.set(json);

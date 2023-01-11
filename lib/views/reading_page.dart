@@ -9,6 +9,7 @@ class ReadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       drawer: const DrawerWidget(),
       appBar: AppBar(
         backgroundColor: secondaryColor,
@@ -16,6 +17,12 @@ class ReadingPage extends StatelessWidget {
             text: 'Temperature Readings', fontSize: 18, color: Colors.white),
         centerTitle: true,
       ),
+      body: ListView.builder(itemBuilder: (context, index) {
+        return const Padding(
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+          child: Card(child: ListTile()),
+        );
+      }),
     );
   }
 }
