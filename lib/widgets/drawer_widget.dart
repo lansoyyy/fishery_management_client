@@ -1,3 +1,4 @@
+import 'package:fishery_management_client/views/reading_page.dart';
 import 'package:fishery_management_client/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -68,6 +69,18 @@ class _MyDrawerState extends State<DrawerWidget> {
               onTap: () {
                 Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => HomePage()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: TextRegular(
+                text: 'Temperature Records',
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+              onTap: () {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const ReadingPage()));
               },
             ),
             ListTile(
