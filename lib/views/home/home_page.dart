@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fishery_management_client/auth/login_page.dart';
 import 'package:fishery_management_client/services/cloud_functions/post_pond.dart';
+import 'package:fishery_management_client/services/cloud_functions/post_sched.dart';
 import 'package:fishery_management_client/services/cloud_functions/post_temp.dart';
 import 'package:fishery_management_client/utils/colors.dart';
 import 'package:fishery_management_client/widgets/button_widget.dart';
@@ -44,6 +45,9 @@ class _HomePageState extends State<HomePage> {
       return '';
     }
   }
+
+  late String schedule = '';
+  late String newPond = '';
 
   @override
   Widget build(BuildContext context) {
@@ -145,11 +149,66 @@ class _HomePageState extends State<HomePage> {
               floatingActionButton: FloatingActionButton(
                   backgroundColor: secondaryColor,
                   child: const Icon(Icons.add, color: Colors.white),
-                  onPressed: () {}),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            child: SizedBox(
+                              height: 250,
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 10),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 0, 20, 10),
+                                    child: TextFormField(
+                                      decoration: const InputDecoration(
+                                          labelText: 'Enter Schedule'),
+                                      onChanged: (_input) {
+                                        schedule = _input;
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 10, 20, 10),
+                                    child: TextFormField(
+                                      decoration: const InputDecoration(
+                                          labelText: 'Enter Pond Name'),
+                                      onChanged: (_input) {
+                                        newPond = _input;
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  ButtonWidget(
+                                      onPressed: () {
+                                        postSched(box.read('username'), newPond,
+                                            schedule);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: TextRegular(
+                                                text: 'Schedule Added!',
+                                                fontSize: 12,
+                                                color: Colors.white),
+                                          ),
+                                        );
+                                        Navigator.pop(context);
+                                      },
+                                      text: 'Continue'),
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
+                            ),
+                          );
+                        });
+                  }),
               body: SizedBox(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
-                        .collection('Temp')
+                        .collection('Sched')
                         .where('username', isEqualTo: box.read('username'))
                         .snapshots(),
                     builder: (BuildContext context,
@@ -183,25 +242,18 @@ class _HomePageState extends State<HomePage> {
                               child: Card(
                                   child: ListTile(
                                 title: TextBold(
-                                    text: data.docs[index]['temp'] + '°C',
+                                    text: "Schedule: " +
+                                        data.docs[index]['pondName'],
                                     fontSize: 14,
                                     color: Colors.black),
                                 subtitle: TextRegular(
                                     text: formattedTime,
                                     fontSize: 12,
                                     color: Colors.grey),
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    FirebaseFirestore.instance
-                                        .collection('Temp')
-                                        .doc(data.docs[index].id)
-                                        .delete();
-                                  },
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                ),
+                                trailing: TextBold(
+                                    text: data.docs[index]['sched'],
+                                    fontSize: 12,
+                                    color: secondaryColor),
                               )),
                             );
                           });
