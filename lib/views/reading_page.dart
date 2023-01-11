@@ -17,12 +17,29 @@ class ReadingPage extends StatelessWidget {
             text: 'Temperature Readings', fontSize: 18, color: Colors.white),
         centerTitle: true,
       ),
-      body: ListView.builder(itemBuilder: (context, index) {
-        return const Padding(
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-          child: Card(child: ListTile()),
-        );
-      }),
+      body: StreamBuilder<Object>(
+          stream: null,
+          builder: (context, snapshot) {
+            return ListView.builder(itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Card(
+                    child: ListTile(
+                  title: TextBold(
+                      text: 'Temperature', fontSize: 14, color: Colors.black),
+                  subtitle: TextRegular(
+                      text: 'Date', fontSize: 12, color: Colors.grey),
+                  trailing: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                  ),
+                )),
+              );
+            });
+          }),
     );
   }
 }

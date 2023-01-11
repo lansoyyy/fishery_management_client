@@ -72,7 +72,7 @@ class _MyDrawerState extends State<DrawerWidget> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.home),
+              leading: const Icon(Icons.history),
               title: TextRegular(
                 text: 'Temperature Records',
                 fontSize: 12,
