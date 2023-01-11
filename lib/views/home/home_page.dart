@@ -8,6 +8,7 @@ import 'package:fishery_management_client/widgets/drawer_widget.dart';
 import 'package:fishery_management_client/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: Colors.grey[100],
         drawer: const DrawerWidget(),
@@ -102,6 +103,10 @@ class _HomePageState extends State<HomePage> {
           centerTitle: true,
           bottom: TabBar(tabs: [
             Tab(
+                icon: const Icon(Icons.date_range),
+                child: TextRegular(
+                    text: 'Schedules', fontSize: 12, color: Colors.white)),
+            Tab(
               child: Column(
                 children: [
                   Image.asset(
@@ -131,11 +136,78 @@ class _HomePageState extends State<HomePage> {
                       text: 'Temperature', fontSize: 12, color: Colors.white)
                 ],
               ),
-            )
+            ),
           ]),
         ),
         body: TabBarView(
           children: [
+            Scaffold(
+              floatingActionButton: FloatingActionButton(
+                  backgroundColor: secondaryColor,
+                  child: const Icon(Icons.add, color: Colors.white),
+                  onPressed: () {}),
+              body: SizedBox(
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('Temp')
+                        .where('username', isEqualTo: box.read('username'))
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        print('error');
+                        return const Center(child: Text('Error'));
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        print('waiting');
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.black,
+                          )),
+                        );
+                      }
+
+                      final data = snapshot.requireData;
+                      return ListView.builder(
+                          itemCount: snapshot.data?.size ?? 0,
+                          itemBuilder: (context, index) {
+                            DateTime created =
+                                data.docs[index]['dateTime'].toDate();
+
+                            String formattedTime =
+                                DateFormat.yMMMd().add_jm().format(created);
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              child: Card(
+                                  child: ListTile(
+                                title: TextBold(
+                                    text: data.docs[index]['temp'] + '°C',
+                                    fontSize: 14,
+                                    color: Colors.black),
+                                subtitle: TextRegular(
+                                    text: formattedTime,
+                                    fontSize: 12,
+                                    color: Colors.grey),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    FirebaseFirestore.instance
+                                        .collection('Temp')
+                                        .doc(data.docs[index].id)
+                                        .delete();
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              )),
+                            );
+                          });
+                    }),
+              ),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
