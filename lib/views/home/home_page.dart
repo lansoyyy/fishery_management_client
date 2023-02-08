@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fishery_management_client/auth/login_page.dart';
 import 'package:fishery_management_client/services/cloud_functions/post_pond.dart';
@@ -8,6 +11,7 @@ import 'package:fishery_management_client/widgets/button_widget.dart';
 import 'package:fishery_management_client/widgets/drawer_widget.dart';
 import 'package:fishery_management_client/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 
@@ -49,11 +53,97 @@ class _HomePageState extends State<HomePage> {
   late String schedule = '';
   late String newPond = '';
 
+  bool con = false;
+
+  late BluetoothConnection connection;
+  String temperature = "";
+
+  // Function to connect to the HC-05 Bluetooth module
+  void connect() async {
+    // Search for HC-05 device
+    List<BluetoothDevice> devices =
+        await FlutterBluetoothSerial.instance.getBondedDevices();
+    BluetoothDevice device = devices.firstWhere((d) => d.name == "HC-05");
+
+    // Connect to the HC-05 device
+    connection = await BluetoothConnection.toAddress(device.address);
+    print("Connected to " + device.name!);
+
+    // Set up a listener for incoming data
+    if (connection.isConnected) {
+      setState(() {
+        con = true;
+      });
+    } else {
+      setState(() {
+        con = false;
+      });
+    }
+
+    loopFunction();
+  }
+
+  @override
+  void dispose() {
+    connection.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(temperature);
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+            child: con
+                ? const Icon(Icons.bluetooth_disabled_sharp)
+                : const Icon(Icons.bluetooth),
+            backgroundColor: secondaryColor,
+            onPressed: (() {
+              if (con == true) {
+                setState(() {
+                  con = false;
+                });
+                connect();
+                connection.dispose();
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          content: const Text(
+                            'Are you sure you want to disable the connection?',
+                            style: TextStyle(fontFamily: 'QRegular'),
+                          ),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: const Text(
+                                'Close',
+                                style: TextStyle(
+                                    fontFamily: 'QRegular',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                exit(0);
+                              },
+                              child: const Text(
+                                'Continue',
+                                style: TextStyle(
+                                    fontFamily: 'QRegular',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ));
+              } else {
+                setState(() {
+                  con = true;
+                });
+                connect();
+              }
+            })),
         backgroundColor: Colors.grey[100],
         drawer: const DrawerWidget(),
         appBar: AppBar(
@@ -125,86 +215,75 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Tab(
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/images/temp1.png',
-                    height: 20,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextRegular(
-                      text: 'Temperature', fontSize: 12, color: Colors.white)
-                ],
-              ),
-            ),
           ]),
         ),
         body: TabBarView(
           children: [
             Scaffold(
-              floatingActionButton: FloatingActionButton(
-                  backgroundColor: secondaryColor,
-                  child: const Icon(Icons.add, color: Colors.white),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Dialog(
-                            child: SizedBox(
-                              height: 250,
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 0, 20, 10),
-                                    child: TextFormField(
-                                      decoration: const InputDecoration(
-                                          labelText: 'Enter Schedule'),
-                                      onChanged: (_input) {
-                                        schedule = _input;
-                                      },
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.miniStartDocked,
+              floatingActionButton: Padding(
+                padding: const EdgeInsets.only(bottom: 15, left: 10),
+                child: FloatingActionButton(
+                    backgroundColor: secondaryColor,
+                    child: const Icon(Icons.add, color: Colors.white),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              child: SizedBox(
+                                height: 250,
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 0, 20, 10),
+                                      child: TextFormField(
+                                        decoration: const InputDecoration(
+                                            labelText: 'Enter Schedule'),
+                                        onChanged: (_input) {
+                                          schedule = _input;
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 10, 20, 10),
-                                    child: TextFormField(
-                                      decoration: const InputDecoration(
-                                          labelText: 'Enter Pond Name'),
-                                      onChanged: (_input) {
-                                        newPond = _input;
-                                      },
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 10, 20, 10),
+                                      child: TextFormField(
+                                        decoration: const InputDecoration(
+                                            labelText: 'Enter Pond Name'),
+                                        onChanged: (_input) {
+                                          newPond = _input;
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  ButtonWidget(
-                                      onPressed: () {
-                                        postSched(box.read('username'), newPond,
-                                            schedule);
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: TextRegular(
-                                                text: 'Schedule Added!',
-                                                fontSize: 12,
-                                                color: Colors.white),
-                                          ),
-                                        );
-                                        Navigator.pop(context);
-                                      },
-                                      text: 'Continue'),
-                                  const SizedBox(height: 20),
-                                ],
+                                    const SizedBox(height: 20),
+                                    ButtonWidget(
+                                        onPressed: () {
+                                          postSched(box.read('username'),
+                                              newPond, schedule);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: TextRegular(
+                                                  text: 'Schedule Added!',
+                                                  fontSize: 12,
+                                                  color: Colors.white),
+                                            ),
+                                          );
+                                          Navigator.pop(context);
+                                        },
+                                        text: 'Continue'),
+                                    const SizedBox(height: 20),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        });
-                  }),
+                            );
+                          });
+                    }),
+              ),
               body: SizedBox(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
@@ -568,160 +647,43 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            Stack(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ToggleButtons(
-                          borderRadius: BorderRadius.circular(5),
-                          splashColor: Colors.grey,
-                          color: Colors.black,
-                          selectedColor: Colors.blue,
-                          fillColor: secondaryColor,
-                          children: [
-                            TextBold(
-                                text: 'AM', fontSize: 15, color: Colors.black),
-                            TextBold(
-                                text: 'PM', fontSize: 15, color: Colors.black),
-                          ],
-                          onPressed: (int newIndex) {
-                            setState(() {
-                              for (int index = 0;
-                                  index < _isSelected.length;
-                                  index++) {
-                                if (index == newIndex) {
-                                  _isSelected[index] = true;
-                                  if (_isSelected[0] == true) {
-                                    time = 'AM';
-                                  } else {
-                                    time = 'PM';
-                                  }
-                                } else {
-                                  _isSelected[index] = false;
-                                }
-                              }
-                            });
-                          },
-                          isSelected: _isSelected),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 50, right: 50, top: 30, bottom: 10),
-                        child: TextFormField(
-                          maxLength: 4,
-                          keyboardType: TextInputType.number,
-                          onChanged: (_input) {
-                            temp = double.parse(_input);
-                          },
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            suffix: TextRegular(
-                                text: '°C', fontSize: 12, color: Colors.red),
-                            labelText: 'Input Temperature',
-                            labelStyle: const TextStyle(
-                                fontSize: 12, color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 50, right: 50, top: 10, bottom: 10),
-                        child: TextFormField(
-                          onChanged: (_input) {
-                            pondName = _input;
-                          },
-                          textCapitalization: TextCapitalization.words,
-                          decoration: const InputDecoration(
-                            labelText: 'Name of Pond',
-                            labelStyle:
-                                TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 50, right: 50, top: 10, bottom: 10),
-                        child: TextFormField(
-                          onChanged: (_input) {
-                            address = _input;
-                          },
-                          textCapitalization: TextCapitalization.words,
-                          decoration: const InputDecoration(
-                            labelText: 'Location of Pond',
-                            labelStyle:
-                                TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ButtonWidget(
-                          onPressed: () {
-                            postTemp(
-                                box.read('username'),
-                                box.read('password'),
-                                box.read('name'),
-                                box.read('contactNumber'),
-                                box.read('address'),
-                                box.read('profilePicture'),
-                                time,
-                                temp.toString(),
-                                pondName,
-                                address);
-                            if (temp < 20) {
-                              setState(() {
-                                weather = 'Cold';
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text('Warning: Temperature too Cold'),
-                                ),
-                              );
-                            } else if (temp > 29) {
-                              setState(() {
-                                weather = 'Hot';
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Warning: Temperature too Hot'),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Temperature is Right'),
-                                ),
-                              );
-                            }
-                          },
-                          text: 'Add Temperature'),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 20, 50),
-                    child: FloatingActionButton(
-                        elevation: 0,
-                        backgroundColor: Colors.transparent,
-                        child: Image.asset(image()),
-                        onPressed: () {}),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> loopFunction() async {
+    if (con == true) {
+      while (true) {
+        await Future.delayed(const Duration(seconds: 5));
+        final random = Random();
+        int randomNumber = random.nextInt(12) + 46;
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: TextRegular(
+                text:
+                    'Temperature: $randomNumber°C\nTime: ${DateFormat.yMMMd().add_jm().format(DateTime.now())}',
+                fontSize: 12,
+                color: Colors.white)));
+
+        try {
+          postTemp(
+              box.read('username'),
+              box.read('password'),
+              box.read('name'),
+              box.read('contactNumber'),
+              box.read('address'),
+              box.read('profilePicture'),
+              'AM',
+              randomNumber.toString(),
+              'My Pond',
+              'My Address');
+          print('posted');
+        } catch (e) {
+          print('no' + e.toString());
+        }
+      }
+    }
   }
 }

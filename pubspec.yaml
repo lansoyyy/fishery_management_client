@@ -40,6 +40,7 @@ dependencies:
   cloud_firestore:
   get_storage:
   intl: ^0.18.0
+  flutter_bluetooth_serial:
 
 dev_dependencies:
   flutter_test:
