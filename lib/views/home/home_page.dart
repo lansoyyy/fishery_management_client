@@ -74,13 +74,12 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         con = true;
       });
+      loopFunction();
     } else {
       setState(() {
         con = false;
       });
     }
-
-    loopFunction();
   }
 
   @override
@@ -105,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   con = false;
                 });
-                connect();
+
                 connection.dispose();
                 showDialog(
                     context: context,
@@ -656,7 +655,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> loopFunction() async {
     if (con == true) {
       while (true) {
-        await Future.delayed(const Duration(seconds: 5));
+        await Future.delayed(const Duration(seconds: 20));
         final random = Random();
         int randomNumber = random.nextInt(12) + 46;
 
