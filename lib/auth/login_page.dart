@@ -133,7 +133,7 @@ class _LogInPageState extends State<LogInPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextBold(
-                      text: 'Fishery Management',
+                      text: 'Soil Monitoring',
                       fontSize: 28,
                       color: Colors.black),
                 ],
@@ -211,8 +211,8 @@ class _LogInPageState extends State<LogInPage> {
                   onPressed: () {
                     if (box.read('username') == myUsername &&
                         box.read('password') == myPassword) {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => HomePage()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const HomePage()));
                     } else {
                       showDialog(
                           context: context,
