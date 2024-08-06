@@ -53,10 +53,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDiQSWg4d_CJ7uTcX-jE1hVd2EASiTPHzg',
-    appId: '1:378285704223:android:ccd6a3be703ecbf603412a',
-    messagingSenderId: '378285704223',
-    projectId: 'fishery-management',
-    storageBucket: 'fishery-management.appspot.com',
-  );
+      apiKey: "AIzaSyD3cx_9adcdXPmN2HjjAnHVAt5D69qlpxA",
+      authDomain: "soil-monitoring-9a1a4.firebaseapp.com",
+      projectId: "soil-monitoring-9a1a4",
+      storageBucket: "soil-monitoring-9a1a4.appspot.com",
+      messagingSenderId: "302042192655",
+      appId: "1:302042192655:web:9022f10715c1d2e4dafc7a");
 }

@@ -14,6 +14,8 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
 
 class LogInPage extends StatefulWidget {
+  const LogInPage({Key? key}) : super(key: key);
+
   @override
   State<LogInPage> createState() => _LogInPageState();
 }
@@ -63,11 +65,11 @@ class _LogInPageState extends State<LogInPage> {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (BuildContext context) => Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30),
+          builder: (BuildContext context) => const Padding(
+            padding: EdgeInsets.only(left: 30, right: 30),
             child: AlertDialog(
                 title: Row(
-              children: const [
+              children: [
                 CircularProgressIndicator(
                   color: Colors.black,
                 ),
@@ -226,7 +228,7 @@ class _LogInPageState extends State<LogInPage> {
                                   style: TextStyle(fontFamily: 'QRegular'),
                                 ),
                                 actions: <Widget>[
-                                  FlatButton(
+                                  MaterialButton(
                                     onPressed: () =>
                                         Navigator.of(context).pop(true),
                                     child: const Text(
@@ -519,7 +521,7 @@ class _LogInPageState extends State<LogInPage> {
                                                                 'QRegular'),
                                                       ),
                                                       actions: <Widget>[
-                                                        FlatButton(
+                                                        MaterialButton(
                                                           onPressed: () {
                                                             box.write(
                                                                 'name', name);
@@ -555,7 +557,7 @@ class _LogInPageState extends State<LogInPage> {
                                                                     MaterialPageRoute(
                                                                         builder:
                                                                             (context) =>
-                                                                                LogInPage()));
+                                                                                const LogInPage()));
                                                           },
                                                           child: const Text(
                                                             'Continue',

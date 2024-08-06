@@ -16,6 +16,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -114,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(fontFamily: 'QRegular'),
                           ),
                           actions: <Widget>[
-                            FlatButton(
+                            MaterialButton(
                               onPressed: () => Navigator.of(context).pop(true),
                               child: const Text(
                                 'Close',
@@ -123,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
-                            FlatButton(
+                            MaterialButton(
                               onPressed: () {
                                 exit(0);
                               },
@@ -163,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(fontFamily: 'QRegular'),
                             ),
                             actions: <Widget>[
-                              FlatButton(
+                              MaterialButton(
                                 onPressed: () =>
                                     Navigator.of(context).pop(true),
                                 child: const Text(
@@ -173,11 +175,12 @@ class _HomePageState extends State<HomePage> {
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              FlatButton(
+                              MaterialButton(
                                 onPressed: () {
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                          builder: (context) => LogInPage()));
+                                          builder: (context) =>
+                                              const LogInPage()));
                                 },
                                 child: const Text(
                                   'Continue',
@@ -457,7 +460,7 @@ class _HomePageState extends State<HomePage> {
                                                                 'QRegular'),
                                                       ),
                                                       actions: <Widget>[
-                                                        FlatButton(
+                                                        MaterialButton(
                                                           onPressed: () {
                                                             Navigator.of(
                                                                     context)
@@ -473,7 +476,7 @@ class _HomePageState extends State<HomePage> {
                                                                         .bold),
                                                           ),
                                                         ),
-                                                        FlatButton(
+                                                        MaterialButton(
                                                           onPressed: () {
                                                             FirebaseFirestore
                                                                 .instance
@@ -489,7 +492,7 @@ class _HomePageState extends State<HomePage> {
                                                                     MaterialPageRoute(
                                                                         builder:
                                                                             (context) =>
-                                                                                HomePage()));
+                                                                                const HomePage()));
                                                           },
                                                           child: const Text(
                                                             'Continue',
@@ -604,7 +607,7 @@ class _HomePageState extends State<HomePage> {
                                                     fontFamily: 'QRegular'),
                                               ),
                                               actions: <Widget>[
-                                                FlatButton(
+                                                MaterialButton(
                                                   onPressed: () {
                                                     postPond(
                                                         box.read('username'),
@@ -623,7 +626,7 @@ class _HomePageState extends State<HomePage> {
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        HomePage()));
+                                                                        const HomePage()));
                                                   },
                                                   child: const Text(
                                                     'Continue',

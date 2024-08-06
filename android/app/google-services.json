@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "378285704223",
-    "project_id": "fishery-management",
-    "storage_bucket": "fishery-management.appspot.com"
+    "project_number": "302042192655",
+    "project_id": "soil-monitoring-9a1a4",
+    "storage_bucket": "soil-monitoring-9a1a4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:378285704223:android:ccd6a3be703ecbf603412a",
+        "mobilesdk_app_id": "1:302042192655:android:40fa0b85fbc29cefdafc7a",
         "android_client_info": {
           "package_name": "com.example.fishery_management_client"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "378285704223-husf8gufjv8le5re4585umcokfiguo7t.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDiQSWg4d_CJ7uTcX-jE1hVd2EASiTPHzg"
+          "current_key": "AIzaSyABG897inaGTNGE4UPNlc6Svs9EThz8zt0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "378285704223-husf8gufjv8le5re4585umcokfiguo7t.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

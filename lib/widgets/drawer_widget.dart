@@ -68,7 +68,7 @@ class _MyDrawerState extends State<DrawerWidget> {
               ),
               onTap: () {
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                    MaterialPageRoute(builder: (context) => const HomePage()));
               },
             ),
             ListTile(
@@ -105,7 +105,7 @@ class _MyDrawerState extends State<DrawerWidget> {
                             style: TextStyle(fontFamily: 'QRegular'),
                           ),
                           actions: <Widget>[
-                            FlatButton(
+                            MaterialButton(
                               onPressed: () => Navigator.of(context).pop(true),
                               child: const Text(
                                 'Close',
@@ -114,11 +114,12 @@ class _MyDrawerState extends State<DrawerWidget> {
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
-                            FlatButton(
+                            MaterialButton(
                               onPressed: () {
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                        builder: (context) => LogInPage()));
+                                        builder: (context) =>
+                                            const LogInPage()));
                               },
                               child: const Text(
                                 'Continue',
